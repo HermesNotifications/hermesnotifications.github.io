@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hermes — self-hosted notification platform</title>
+<meta name="description" content="Hermes is an open-source, self-hostable notification platform. One API call fans out to email, SMS and a real-time in-app inbox. Apache 2.0.">
+<meta name="theme-color" content="#faf9f7">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hermes — self-hosted notification platform">
+<meta property="og:description" content="One API call. Email, SMS and an in-app inbox. Open source, Apache 2.0, run on your own infrastructure.">
+<meta property="og:url" content="https://hermesnotifications.github.io/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="./">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">Hermes</span>
+      <span class="brand__version">v0.9</span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <a href="docs/">Docs</a>
+      <a href="#how-it-works">Architecture</a>
+      <a href="#developers">SDKs</a>
+      <a href="#get-started">Deploy</a>
+      <a class="is-emphasis" href="https://github.com/HermesNotifications/hermes">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Hero -->
+  <section class="wrap hero">
+    <div>
+      <p class="eyebrow eyebrow--accent hero__eyebrow">Apache 2.0 · self-hostable</p>
+      <h1>One API call. Email, SMS and an in-app inbox.</h1>
+      <p class="hero__lede">Hermes fans a single notification out across channels — with real-time delivery to the browser over WebSocket, per-user preferences, and templates you manage rather than hard-code.</p>
+
+      <figure class="term code-block">
+        <figcaption class="sr-only">Sending a notification with curl</figcaption>
+<pre><code><span class="t-cmd">curl</span> -X POST https://hermes.example.com<span class="t-path">/v1/send</span> \
+  -H <span class="t-str">"Authorization: Bearer $API_KEY"</span> \
+  -d <span class="t-str">'{"to":{"user_id":"user123"},</span>
+     <span class="t-str">"template":"welcome","data":{"name":"Alice"}}'</span></code></pre>
+      </figure>
+
+      <div class="btn-row">
+        <a class="btn btn--primary" href="docs/">Quickstart</a>
+        <a class="btn btn--ghost" href="#how-it-works">Read the architecture</a>
+      </div>
+    </div>
+
+    <figure class="mock">
+      <figcaption class="sr-only">Illustration: the Hermes inbox widget embedded in a product, showing live notifications</figcaption>
+      <div class="mock__chrome">
+        <span class="mock__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="mock__url">app.yourproduct.com</span>
+        <span class="mock__bell" aria-hidden="true">
+          <span class="mock__bell-icon"></span>
+          <span class="mock__badge">3</span>
+        </span>
+      </div>
+      <div class="mock__body">
+        <div class="mock__title">
+          <b>Inbox</b>
+          <span class="live">live</span>
+        </div>
+        <ul class="inbox">
+          <li class="inbox__item inbox__item--unread">
+            <span class="inbox__pip" aria-hidden="true"></span>
+            <span>
+              <span class="inbox__text">Deployment <b>api-gateway</b> promoted to production</span>
+              <span class="inbox__meta">kargo · 4s ago</span>
+            </span>
+          </li>
+          <li class="inbox__item inbox__item--unread">
+            <span class="inbox__pip" aria-hidden="true"></span>
+            <span>
+              <span class="inbox__text">Alice invited you to <b>Platform</b></span>
+              <span class="inbox__meta">invites · 2m ago</span>
+            </span>
+          </li>
+          <li class="inbox__item">
+            <span class="inbox__pip" aria-hidden="true"></span>
+            <span>
+              <span class="inbox__text">Weekly usage report is ready</span>
+              <span class="inbox__meta">digests · yesterday</span>
+            </span>
+          </li>
+        </ul>
+        <p class="mock__foot">&lt;hermes-inbox api="…" token="…" socket="…"&gt;</p>
+      </div>
+    </figure>
+  </section>
+
+  <!-- Premise -->
+  <section class="wrap premise">
+    <h2>Every product eventually grows a notification layer.</h2>
+    <div>
+      <p>Transactional email, an SMS fallback, a bell icon with unread badges, a preferences page, and the plumbing to keep them consistent. Teams usually build it twice — once badly, once again under load — or hand it to a SaaS vendor along with their user data.</p>
+      <p>Hermes is that layer, built properly and run on your own infrastructure.</p>
+    </div>
+  </section>
+
+  <!-- What it does -->
+  <section class="wrap section section--flush-top" id="features" aria-labelledby="features-h">
+    <div class="section-head">
+      <h2 class="eyebrow" id="features-h">What it does</h2>
+    </div>
+    <div class="grid-rule grid-rule--3">
+      <article class="feature">
+        <h3>Multi-channel from one request</h3>
+        <p>Email over SMTP or AWS SES, SMS via webhook to your gateway of choice, and an in-app inbox — all from a single send. Adding a channel is a configuration change, not an integration project.</p>
+      </article>
+      <article class="feature">
+        <h3>Real-time in-app inbox</h3>
+        <p>Notifications appear the moment they are delivered, pushed over a WebSocket via Centrifugo. No polling, no page refresh.</p>
+      </article>
+      <article class="feature">
+        <h3>A widget you can drop in</h3>
+        <p>Bell, badge, panel, live updates and mark-read actions ship as a standard custom element — any framework or none — with a native React binding over the same element.</p>
+      </article>
+      <article class="feature">
+        <h3>Templates and preferences</h3>
+        <p>Templates hold per-channel content and resolve at dispatch time with a Redis-backed cache. Categories carry default channels; a required category bypasses opt-in entirely.</p>
+      </article>
+      <article class="feature">
+        <h3>Delivery you can audit</h3>
+        <p>Every attempt emits an event. Status only advances — pending → sent → delivered → read → archived — and terminal failures land in a dead-letter stream for inspection and replay.</p>
+      </article>
+      <article class="feature">
+        <h3>Self-hosted, Apache 2.0</h3>
+        <p>No per-notification pricing, no vendor holding your recipient list. A Helm chart installs every service; a reference Terraform deployment runs it for real.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section section--sunken" id="how-it-works" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="how-h">How it works</h2>
+        <p class="section-head__note">Nine Go services, NATS JetStream between each stage</p>
+      </div>
+
+      <ol class="grid-rule grid-rule--5">
+        <li class="stage">
+          <p class="stage__n">01</p>
+          <h3>Send</h3>
+          <p>Auth, idempotency, publish. No DB on the hot path.</p>
+        </li>
+        <li class="stage">
+          <p class="stage__n">02</p>
+          <h3>Dispatch</h3>
+          <p>Persists, resolves templates and channels, fans out.</p>
+        </li>
+        <li class="stage">
+          <p class="stage__n">03</p>
+          <h3>Workers</h3>
+          <p>SMTP/SES, SMS webhook, inbox push via Centrifugo.</p>
+        </li>
+        <li class="stage">
+          <p class="stage__n">04</p>
+          <h3>Event writer</h3>
+          <p>Batch-inserts events, rolls status forward. Never backwards.</p>
+        </li>
+        <li class="stage">
+          <p class="stage__n">05</p>
+          <h3>Browser</h3>
+          <p>WebSocket → HTTP-streaming → polling, negotiated.</p>
+        </li>
+      </ol>
+
+      <div class="paths">
+        <div class="path">
+          <p class="path__label">Write path — API key auth</p>
+          <p>Send is a deliberately thin ingestion layer: it authenticates the API key, applies idempotency, and publishes to NATS. Dispatch persists the notification record, resolves templates and channels, and fans out to per-channel delivery subjects.</p>
+        </div>
+        <div class="path">
+          <p class="path__label">Read path — JWT auth</p>
+          <p>Inbox Service serves the user's inbox with cursor-based pagination. User Service manages profiles and notification preferences. Centrifugo pushes live updates on user-scoped channels.</p>
+        </div>
+        <div class="path">
+          <p class="path__label">Two auth modes, kept separate</p>
+          <p>API keys, HMAC-SHA256 hashed at rest, for server-to-server Send and Admin APIs. Short-lived Hermes-issued JWTs, multi-key for rotation, for the user-facing Inbox and User APIs.</p>
+        </div>
+      </div>
+
+      <dl class="spec">
+        <div class="spec__row"><dt>Services</dt><dd>Nine Go services — send, admin, dispatch, event writer, three delivery workers, inbox, user</dd></div>
+        <div class="spec__row"><dt>Messaging</dt><dd>NATS JetStream — work-queue streams for notifications, delivery and events, plus a dead-letter stream</dd></div>
+        <div class="spec__row"><dt>Database</dt><dd>PostgreSQL, shared, migrated with golang-migrate</dd></div>
+        <div class="spec__row"><dt>Cache</dt><dd>Redis / Valkey — template cache, idempotency dedup, Centrifugo engine</dd></div>
+        <div class="spec__row"><dt>Realtime</dt><dd>Centrifugo, user-scoped channels</dd></div>
+        <div class="spec__row"><dt>Frontend</dt><dd>Next.js admin portal; custom-element + React inbox widget</dd></div>
+        <div class="spec__row"><dt>Observability</dt><dd>OpenTelemetry to an in-cluster LGTM stack (Loki, Grafana, Tempo, Prometheus)</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="wrap section" id="compare" aria-labelledby="compare-h">
+    <div class="section-head">
+      <h2 id="compare-h">Self-hosted, or hosted for you</h2>
+      <p class="section-head__note">Where the two models actually differ</p>
+    </div>
+
+    <div class="compare">
+      <div class="compare__row compare__row--head">
+        <span aria-hidden="true"></span>
+        <span class="is-ours">Hermes, self-hosted</span>
+        <span class="is-theirs">Hosted notification SaaS</span>
+      </div>
+      <div class="compare__row">
+        <span class="compare__key">Cost model</span>
+        <span class="compare__ours">Your infrastructure bill. No per-notification pricing.</span>
+        <span class="compare__theirs">Priced per notification or per monthly active user.</span>
+      </div>
+      <div class="compare__row">
+        <span class="compare__key">Recipient data</span>
+        <span class="compare__ours">Stays in your PostgreSQL, in your VPC.</span>
+        <span class="compare__theirs">Contact points and send history held by the vendor.</span>
+      </div>
+      <div class="compare__row">
+        <span class="compare__key">Source</span>
+        <span class="compare__ours">Apache 2.0. Fork it, audit it, patch it.</span>
+        <span class="compare__theirs">Closed; behaviour is what the docs say it is.</span>
+      </div>
+      <div class="compare__row">
+        <span class="compare__key">Delivery evidence</span>
+        <span class="compare__ours">Every event in a table you can query, with a dead-letter stream.</span>
+        <span class="compare__theirs">Whatever the dashboard and export API expose.</span>
+      </div>
+      <div class="compare__row">
+        <span class="compare__key">Operational burden</span>
+        <span class="compare__ours">Yours: Kubernetes, Postgres, NATS, Redis. Terraform and Helm provided.</span>
+        <span class="compare__theirs">Theirs. This is the real trade.</span>
+      </div>
+      <div class="compare__row">
+        <span class="compare__key">Support</span>
+        <span class="compare__ours">Community. Developed non-commercially, supplied free of charge.</span>
+        <span class="compare__theirs">Contractual, with an SLA.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get started -->
+  <section class="section section--dark" id="get-started" aria-labelledby="start-h">
+    <div class="wrap start">
+      <div>
+        <p class="eyebrow eyebrow--on-dark">Get started</p>
+        <h2 id="start-h">Evaluate in five minutes.</h2>
+        <p class="start__lede">A Helm chart installs every service plus bundled PostgreSQL, NATS, Redis and Centrifugo, with the schema migration and stream provisioning applied automatically.</p>
+        <div class="start__points">
+          <div>
+            <h3>Run it for real</h3>
+            <p>Terraform for VPC, EKS, Aurora PostgreSQL, ElastiCache and ECR — all on Graviton — with ArgoCD for GitOps sync and Kargo for staged promotion behind an operator approval.</p>
+          </div>
+          <div>
+            <h3>Develop on it</h3>
+            <p><code>make dev-up</code> brings up a full local Kubernetes environment on k3d with Tilt and hot reload. Unit, integration, end-to-end and k6 load tests ship with it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel__bar">
+            <i aria-hidden="true"></i>
+            <span>install</span>
+          </div>
+          <figure class="term code-block">
+            <figcaption class="sr-only">Installing Hermes with Helm</figcaption>
+<pre><code>helm install hermes oci://ghcr.io/hermesnotifications/charts/hermes \
+  --namespace hermes --create-namespace \
+  --set global.domain=hermes.example.com \
+  --set hermes.jwt.secret="$(openssl rand -base64 32)" \
+  --set hermes.apiKey.hmacSecret="$(openssl rand -base64 32)"</code></pre>
+          </figure>
+        </div>
+        <p class="aside-note">The bundled datastores are for evaluation only; production means external datastores over TLS and the documented hardening steps.</p>
+        <div class="btn-row">
+          <a class="btn btn--on-dark" href="docs/">Quickstart guide</a>
+          <a class="btn btn--ghost-dark" href="docs/#install">Self-hosting docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- For developers -->
+  <section class="wrap section" id="developers" aria-labelledby="devs-h">
+    <div class="section-head">
+      <h2 id="devs-h">For developers</h2>
+      <p class="section-head__note">Docs hub · API reference · integration guide · ADRs</p>
+    </div>
+
+    <div class="devs">
+      <div class="devs__col">
+        <article class="card">
+          <h3>SDKs in four languages</h3>
+          <p class="card__sub">Server SDKs, plus browser packages for the client, the React binding and the embeddable widget.</p>
+          <ul class="sdk-grid">
+            <li>@hermes/node</li>
+            <li>hermes-python</li>
+            <li>hermes-java</li>
+            <li>Hermes.NET</li>
+            <li>@hermes/react</li>
+            <li>@hermes/inbox-widget</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>An admin portal</h3>
+          <p class="card__sub">A Next.js UI for organizations, categories, templates and API keys.</p>
+          <div class="portal">
+            <div class="portal__tabs" aria-hidden="true">
+              <span class="is-active">Templates</span>
+              <span>Categories</span>
+              <span>API keys</span>
+            </div>
+            <div class="portal__rows">
+              <div class="portal__row portal__row--head"><span>slug</span><span>channels</span><span>updated</span></div>
+              <div class="portal__row"><span>welcome</span><span class="ch">email · inbox</span><span class="ago">2d ago</span></div>
+              <div class="portal__row"><span>password-reset</span><span class="ch">email · sms</span><span class="ago">5d ago</span></div>
+              <div class="portal__row"><span>deploy-promoted</span><span class="ch">inbox</span><span class="ago">1w ago</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3>A CLI, including a terminal inbox</h3>
+        <p class="card__sub"><code>hermes</code> manages categories, templates and API keys, sends notifications, and opens an interactive TUI inbox with live updates.</p>
+        <figure class="term term--tui">
+          <figcaption class="sr-only">The hermes CLI showing a terminal inbox and a send command</figcaption>
+<pre><code><span class="t-prompt">$</span> hermes inbox --user user123
+<span class="t-frame">┌─ Inbox ──────────────────── ● live ─┐</span>
+<span class="t-frame">│</span> <span class="t-dot">●</span> api-gateway promoted      <span class="t-frame">4s │</span>
+<span class="t-frame">│</span> <span class="t-dot">●</span> Alice invited you         <span class="t-frame">2m │</span>
+<span class="t-frame">│   Weekly usage report      1d │</span>
+<span class="t-frame">└──── r read · a archive · q quit ────┘</span>
+
+<span class="t-prompt">$</span> hermes send --template welcome --to user123
+<span class="t-out">queued  01J8F2… → email, inbox</span></code></pre>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__cols">
+      <div>
+        <div class="brand">
+          <span class="brand__mark" style="width:13px;height:13px" aria-hidden="true"></span>
+          <span class="brand__name" style="font-size:14px">Hermes</span>
+        </div>
+        <p class="site-footer__about">An open-source, self-hostable notification platform. Developed non-commercially and supplied free of charge.</p>
+      </div>
+
+      <nav class="footer-col" aria-label="Docs">
+        <p class="footer-col__head">Docs</p>
+        <a href="docs/">Quickstart</a>
+        <a href="#how-it-works">Architecture</a>
+        <a href="#how-it-works">Data model</a>
+        <a href="#features">Embedding the inbox</a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Reference">
+        <p class="footer-col__head">Reference</p>
+        <a href="docs/">API</a>
+        <a href="#developers">CLI</a>
+        <a href="docs/">Integration guide</a>
+        <a href="https://github.com/HermesNotifications/hermes">ADRs</a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Project">
+        <p class="footer-col__head">Project</p>
+        <a href="https://github.com/HermesNotifications/hermes">GitHub</a>
+        <span>License — Apache 2.0</span>
+        <span>Disclaimer</span>
+        <span>Requirements</span>
+      </nav>
+    </div>
+
+    <div class="site-footer__legal">
+      <p>Hermes is <b>not designed, tested, or certified for use in safety-critical systems</b>, and is <b>not intended for distribution or use within the European Economic Area</b>. Users are responsible for compliance with applicable local laws. See <code>DISCLAIMER.md</code> for full usage information and <code>LICENSE</code> for the license terms.</p>
+      <p class="site-footer__versions">Go 1.26+ · K8s 1.26+ · Helm 3.12+</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js" defer></script>
+</body>
+</html>

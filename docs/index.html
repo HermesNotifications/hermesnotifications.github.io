@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quickstart — Hermes docs</title>
+<meta name="description" content="Install every Hermes service plus bundled PostgreSQL, NATS, Redis and Centrifugo into a Kubernetes namespace, then send your first notification.">
+<meta name="theme-color" content="#faf9f7">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Quickstart — Hermes docs">
+<meta property="og:description" content="Install Hermes with Helm and send your first notification in five minutes.">
+<meta property="og:url" content="https://hermesnotifications.github.io/docs/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header docs-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="../">
+      <span class="brand__mark" style="width:14px;height:14px" aria-hidden="true"></span>
+      <span class="brand__name" style="font-size:14.5px">Hermes</span>
+      <span class="brand__sep" aria-hidden="true">/</span>
+      <span class="brand__context">Docs</span>
+    </a>
+
+    <div class="docs-header__tools">
+      <div class="docs-search">
+        <label class="sr-only" for="docs-search-input">Search docs</label>
+        <input id="docs-search-input" type="search" placeholder="Search docs" autocomplete="off" spellcheck="false">
+        <kbd aria-hidden="true">⌘K</kbd>
+      </div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="docs-sidebar">Contents</button>
+      <a href="https://github.com/HermesNotifications/hermes">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <nav class="docs-sidebar" id="docs-sidebar" aria-label="Documentation">
+    <div>
+      <p class="docs-sidebar__head">Start here</p>
+      <ul>
+        <li><span class="is-pending" title="Not written yet">Introduction</span></li>
+        <li><a class="is-current" href="./" aria-current="page">Quickstart</a></li>
+        <li><a href="#send">Send your first notification</a></li>
+        <li><span class="is-pending" title="Not written yet">Integration guide</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="docs-sidebar__head">Concepts</p>
+      <ul>
+        <li><a href="../#how-it-works">Architecture</a></li>
+        <li><a href="../#how-it-works">Services</a></li>
+        <li><span class="is-pending" title="Not written yet">Data model</span></li>
+        <li><span class="is-pending" title="Not written yet">Templates &amp; categories</span></li>
+        <li><span class="is-pending" title="Not written yet">Preferences</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="docs-sidebar__head">Self-hosting</p>
+      <ul>
+        <li><a href="#install">Helm chart</a></li>
+        <li><span class="is-pending" title="Not written yet">Reference deployment</span></li>
+        <li><span class="is-pending" title="Not written yet">Hardening</span></li>
+        <li><span class="is-pending" title="Not written yet">Observability</span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="docs-sidebar__head">Reference</p>
+      <ul>
+        <li><span class="is-pending" title="Not written yet">API</span></li>
+        <li><a href="../#developers">CLI</a></li>
+        <li><span class="is-pending" title="Not written yet">Embedding the inbox</span></li>
+        <li><span class="is-pending" title="Not written yet">ADRs</span></li>
+      </ul>
+    </div>
+    <p class="sr-only" id="docs-search-status" role="status"></p>
+  </nav>
+
+  <main class="docs-main" id="main">
+    <nav class="docs-crumbs" aria-label="Breadcrumb">
+      <span>Self-hosting</span><span aria-hidden="true">/</span><span class="is-current" aria-current="page">Quickstart</span>
+    </nav>
+
+    <h1>Quickstart</h1>
+    <p class="docs-lede">Install every Hermes service plus bundled PostgreSQL, NATS, Redis and Centrifugo into a namespace, with the schema migration and stream provisioning applied automatically.</p>
+
+    <aside class="callout">
+      <p class="callout__tag">NOTE</p>
+      <p>The bundled datastores are for evaluation only. Production means external datastores over TLS and the documented hardening steps.</p>
+    </aside>
+
+    <p class="eyebrow" style="margin-bottom:10px">Requirements</p>
+    <div class="grid-rule grid-rule--3 req">
+      <div>
+        <h3>Kubernetes 1.26+</h3>
+        <p>Any conformant cluster</p>
+      </div>
+      <div>
+        <h3>Helm 3.12+</h3>
+        <p>OCI registry support</p>
+      </div>
+      <div>
+        <h3>A domain</h3>
+        <p>Ingress and TLS termination</p>
+      </div>
+    </div>
+
+    <h2 id="install">1 · Install the chart</h2>
+    <div class="term code-block">
+<pre><code>helm install hermes oci://ghcr.io/hermesnotifications/charts/hermes \
+  --namespace hermes --create-namespace \
+  --set global.domain=hermes.example.com \
+  --set hermes.jwt.secret="$(openssl rand -base64 32)" \
+  --set hermes.apiKey.hmacSecret="$(openssl rand -base64 32)"</code></pre>
+    </div>
+
+    <h2 id="verify">2 · Verify the rollout</h2>
+    <div class="term code-block">
+<pre><code><span class="t-prompt">$</span> kubectl get pods -n hermes
+<span class="t-out">hermes-send-…        1/1   Running</span>
+<span class="t-out">hermes-dispatch-…    1/1   Running</span>
+<span class="t-out">hermes-event-writer- 1/1   Running</span></code></pre>
+    </div>
+
+    <h2 id="send">3 · Send your first notification</h2>
+    <div class="term code-block">
+<pre><code>curl -X POST https://hermes.example.com/v1/send \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": {"organization_id": "&lt;uuid&gt;", "user_id": "user123"},
+    "template": "welcome",
+    "data": {"name": "Alice"}
+  }'</code></pre>
+    </div>
+
+    <h2 id="next">Next steps</h2>
+    <div class="next-steps">
+      <a href="../#features">
+        <h3>Embed the inbox →</h3>
+        <p>Drop the custom element into your frontend with an origin, a token and a socket URL.</p>
+      </a>
+      <a href="../#get-started">
+        <h3>Harden for production →</h3>
+        <p>External datastores over TLS, secret rotation, and the reference Terraform deployment.</p>
+      </a>
+    </div>
+
+    <nav class="docs-pager" aria-label="Pagination">
+      <span>← Introduction</span>
+      <a href="../#get-started">Reference deployment →</a>
+    </nav>
+  </main>
+
+  <aside class="docs-toc" aria-label="On this page">
+    <p class="docs-toc__head">On this page</p>
+    <ul>
+      <li><a href="#install">Install the chart</a></li>
+      <li><a href="#verify">Verify the rollout</a></li>
+      <li><a href="#send">Send your first notification</a></li>
+      <li><a href="#next">Next steps</a></li>
+    </ul>
+    <p class="docs-toc__edit"><a href="https://github.com/HermesNotifications/hermesnotifications.github.io/edit/main/docs/index.html">Edit this page on GitHub ↗</a></p>
+  </aside>
+
+</div>
+
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
